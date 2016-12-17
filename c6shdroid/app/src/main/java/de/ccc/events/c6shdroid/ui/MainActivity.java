@@ -1,7 +1,6 @@
 package de.ccc.events.c6shdroid.ui;
 
 import android.Manifest;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -11,16 +10,19 @@ import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.RawRes;
+import android.support.annotation.StringRes;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -136,7 +138,7 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
         lastScanTime = System.currentTimeMillis();
         lastScanCode = s;
 
-        mediaPlayer.start();
+        if (config.getSoundEnabled()) mediaPlayer.start();
         resetView();
 
         if (config.isConfigured()) {
@@ -186,7 +188,7 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
         ((TextView) findViewById(R.id.tvAttendeeName)).setText("");
         ((TextView) findViewById(R.id.tvOrderCode)).setText("");
         findViewById(R.id.rlScanStatus).setBackgroundColor(
-                ContextCompat.getColor(this,R.color.scan_result_unknown));
+                ContextCompat.getColor(this, R.color.scan_result_unknown));
 
         if (config.isConfigured()) {
             tvScanResult.setText(R.string.hint_scan);
@@ -202,7 +204,7 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
             if (params[0].matches("[0-9A-Za-z-]+")) {
                 return checkProvider.check(params[0]);
             } else {
-                return new TicketCheckProvider.CheckResult(TicketCheckProvider.CheckResult.Type.INVALID);
+                return new TicketCheckProvider.CheckResult(TicketCheckProvider.CheckResult.Type.INVALID, getString(R.string.scan_result_invalid));
             }
         }
 
@@ -273,7 +275,7 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
         } else {
             tvScanResult.setText(getString(default_string));
         }
-        findViewById(R.id.rlScanStatus).setBackgroundColor(ContextCompat.getColor(this,col));
+        findViewById(R.id.rlScanStatus).setBackgroundColor(ContextCompat.getColor(this, col));
 
         timeoutHandler.postDelayed(new Runnable() {
             public void run() {
@@ -322,6 +324,9 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
         checkable = menu.findItem(R.id.action_autofocus);
         checkable.setChecked(config.getAutofocus());
 
+        checkable = menu.findItem(R.id.action_play_sound);
+        checkable.setChecked(config.getSoundEnabled());
+
         return true;
     }
 
@@ -342,6 +347,10 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
                 qrView.setFlash(!item.isChecked());
                 item.setChecked(!item.isChecked());
                 return true;
+            case R.id.action_play_sound:
+                config.setSoundEnabled(!item.isChecked());
+                item.setChecked(!item.isChecked());
+                return true;
             case R.id.action_search:
                 if (config.isConfigured()) {
                     Intent intent = new Intent(this, SearchActivity.class);
@@ -351,25 +360,29 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
                 }
                 return true;
             case R.id.action_about:
-                asset_dialog("about.html", R.string.about);
+                asset_dialog(R.raw.about, R.string.about);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
-    private void asset_dialog(String filename, int title) {
-        final Dialog dialog = new Dialog(this);
-        dialog.setContentView(R.layout.dialog_about);
-        dialog.setTitle(title);
-        TextView textview1 = (TextView) dialog.findViewById(R.id.textView1);
+    private void asset_dialog(@RawRes int htmlRes, @StringRes int title) {
+        final View view = LayoutInflater.from(this).inflate(R.layout.dialog_about, null, false);
+        final AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle(title)
+                .setView(view)
+                .setPositiveButton(R.string.dismiss, null)
+                .create();
+
+        TextView textView = (TextView) view.findViewById(R.id.aboutText);
 
         String text = "";
 
         StringBuilder builder = new StringBuilder();
         InputStream fis;
         try {
-            fis = getResources().openRawResource(R.raw.about);
+            fis = getResources().openRawResource(htmlRes);
             BufferedReader reader = new BufferedReader(new InputStreamReader(fis, "utf-8"));
             String line;
             while ((line = reader.readLine()) != null) {
@@ -382,17 +395,8 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
             e.printStackTrace();
         }
 
-        textview1.setText(Html.fromHtml(text));
-        textview1.setMovementMethod(LinkMovementMethod.getInstance());
-
-        Button dialogButton = (Button) dialog.findViewById(R.id.button1);
-        // if button is clicked, close the custom dialog
-        dialogButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
+        textView.setText(Html.fromHtml(text));
+        textView.setMovementMethod(LinkMovementMethod.getInstance());
 
         dialog.show();
     }

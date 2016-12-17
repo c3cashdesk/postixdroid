@@ -51,9 +51,15 @@ public class OnlineCheckProvider implements TicketCheckProvider {
             }
             return res;
         } catch (JSONException e) {
-            return new CheckResult(CheckResult.Type.ERROR, "Invalid server response");
+            CheckResult cr = new CheckResult(CheckResult.Type.ERROR, "Invalid server response");
+            if (e.getCause() != null)
+                cr.setTicket(e.getCause().getMessage());
+            return cr;
         } catch (ApiException e) {
-            return new CheckResult(CheckResult.Type.ERROR, e.getMessage());
+            CheckResult cr = new CheckResult(CheckResult.Type.ERROR, e.getMessage());
+            if (e.getCause() != null)
+                cr.setTicket(e.getCause().getMessage());
+            return cr;
         }
     }
 

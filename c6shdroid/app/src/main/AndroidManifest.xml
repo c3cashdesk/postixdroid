@@ -11,13 +11,13 @@
         android:required="true" />
 
     <application
-        android:name="de.ccc.events.c6shdroid.C6shDroid"
+        android:name=".PretixDroid"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
         <activity
-            android:name="de.ccc.events.c6shdroid.ui.MainActivity"
+            android:name=".ui.MainActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -26,13 +26,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="de.ccc.events.c6shdroid.ui.SearchActivity"
-            android:parentActivityName="de.ccc.events.c6shdroid.ui.MainActivity"
+            android:name=".ui.SearchActivity"
+            android:parentActivityName=".ui.MainActivity"
             android:label="@string/action_search"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="de.ccc.events.c6shdroid.ui.MainActivity" />
+                android:value=".ui.MainActivity" />
         </activity>
     </application>
 

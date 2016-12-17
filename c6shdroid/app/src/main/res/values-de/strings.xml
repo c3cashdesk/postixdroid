@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">c6sh</string>
+    <string name="action_play_sound">Ton abspielen</string>
+    <string name="app_name">c6shdroid</string>
     <string name="err_qr_invalid">Der gescannte QR-Code ist ungültig.</string>
     <string name="err_qr_version">Die App-Version ist nicht mit dem c6sh-Server kompatibel. Bitte prüfen Sie, ob es ein Update gibt.</string>
     <string name="config_done">App konfiguriert. Sie können nun Tickets scannen.</string>
