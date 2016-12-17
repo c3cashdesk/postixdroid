@@ -17,6 +17,8 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -130,9 +132,9 @@ public class SearchActivity extends AppCompatActivity {
         @Override
         protected TicketCheckProvider.CheckResult doInBackground(String... params) {
             if (params[0].matches("[0-9A-Za-z-]+")) {
-                return checkProvider.check(params[0]);
+                return checkProvider.check(params[0], new JSONObject());
             } else {
-                return new TicketCheckProvider.CheckResult(TicketCheckProvider.CheckResult.Type.INVALID);
+                return new TicketCheckProvider.CheckResult(TicketCheckProvider.CheckResult.Type.ERROR, getString(R.string.scan_result_invalid));
             }
         }
 
@@ -145,14 +147,11 @@ public class SearchActivity extends AppCompatActivity {
                 case ERROR:
                     default_string = R.string.err_unknown;
                     break;
-                case INVALID:
-                    default_string = R.string.scan_result_invalid;
+                case INPUT:
+                    // TODO
                     break;
-                case UNPAID:
-                    default_string = R.string.scan_result_unpaid;
-                    break;
-                case USED:
-                    default_string = R.string.scan_result_used;
+                case CONFIRMATION:
+                    // TODO
                     break;
                 case VALID:
                     default_string = R.string.scan_result_redeemed;

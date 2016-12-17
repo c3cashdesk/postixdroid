@@ -38,13 +38,7 @@ public class SearchResultAdapter extends ArrayAdapter<TicketCheckProvider.Search
 
         tvSecret.setText(item.getSecret());
         tvOrderCode.setText(item.getOrderCode());
-        if (item.getAttendee_name() != null && !item.getAttendee_name().equals("null")) {
-            tvAttendeeName.setText(item.getAttendee_name());
-        }
-        tvTicketName.setText(item.getTicket() + (
-                item.getVariation() != null && !item.getVariation().equals("null")
-                        ? " - " + item.getVariation() : ""
-        ));
+        tvTicketName.setText(item.getTicket());
         if (item.isRedeemed()) {
             tvStatus.setText(R.string.status_redeemed);
             rlResult.setBackgroundColor(ContextCompat.getColor(context, R.color.scan_result_warn));

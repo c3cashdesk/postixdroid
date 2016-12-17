@@ -61,6 +61,9 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
     private TicketCheckProvider checkProvider;
     private AppConfig config;
 
+    private JSONObject options;
+    private String last_secret;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -162,6 +165,8 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
     }
 
     private void handleTicketScanned(String s) {
+        last_secret = s;
+        options = new JSONObject();
         state = State.LOADING;
         findViewById(R.id.tvScanResult).setVisibility(View.GONE);
         findViewById(R.id.pbScan).setVisibility(View.VISIBLE);
@@ -172,13 +177,7 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
         TextView tvScanResult = (TextView) findViewById(R.id.tvScanResult);
         timeoutHandler.removeCallbacksAndMessages(null);
         tvScanResult.setVisibility(View.VISIBLE);
-        findViewById(R.id.tvTicketName).setVisibility(View.INVISIBLE);
-        findViewById(R.id.tvAttendeeName).setVisibility(View.INVISIBLE);
-        findViewById(R.id.tvOrderCode).setVisibility(View.INVISIBLE);
-        ((TextView) findViewById(R.id.tvTicketName)).setText("");
         ((TextView) findViewById(R.id.tvScanResult)).setText("");
-        ((TextView) findViewById(R.id.tvAttendeeName)).setText("");
-        ((TextView) findViewById(R.id.tvOrderCode)).setText("");
         findViewById(R.id.rlScanStatus).setBackgroundColor(
                 ContextCompat.getColor(this, R.color.scan_result_unknown));
 
@@ -194,9 +193,9 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
         @Override
         protected TicketCheckProvider.CheckResult doInBackground(String... params) {
             if (params[0].matches("[0-9A-Za-z-]+")) {
-                return checkProvider.check(params[0]);
+                return checkProvider.check(params[0], options);
             } else {
-                return new TicketCheckProvider.CheckResult(TicketCheckProvider.CheckResult.Type.INVALID, getString(R.string.scan_result_invalid));
+                return new TicketCheckProvider.CheckResult(TicketCheckProvider.CheckResult.Type.ERROR, getString(R.string.scan_result_invalid));
             }
         }
 
@@ -209,32 +208,10 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
     private void displayScanResult(TicketCheckProvider.CheckResult checkResult) {
 
         TextView tvScanResult = (TextView) findViewById(R.id.tvScanResult);
-        TextView tvTicketName = (TextView) findViewById(R.id.tvTicketName);
-        TextView tvAttendeeName = (TextView) findViewById(R.id.tvAttendeeName);
-        TextView tvOrderCode = (TextView) findViewById(R.id.tvOrderCode);
 
         state = State.RESULT;
         findViewById(R.id.pbScan).setVisibility(View.INVISIBLE);
         tvScanResult.setVisibility(View.VISIBLE);
-
-        if (checkResult.getTicket() != null) {
-            tvTicketName.setVisibility(View.VISIBLE);
-            if (checkResult.getVariation() != null && !checkResult.getVariation().equals("null")) {
-                tvTicketName.setText(checkResult.getTicket() + " – " + checkResult.getVariation());
-            } else {
-                tvTicketName.setText(checkResult.getTicket());
-            }
-        }
-
-        if (checkResult.getAttendee_name() != null && !checkResult.getAttendee_name().equals("null")) {
-            tvAttendeeName.setVisibility(View.VISIBLE);
-            tvAttendeeName.setText(checkResult.getAttendee_name());
-        }
-
-        if (checkResult.getOrderCode() != null && !checkResult.getOrderCode().equals("null")) {
-            tvOrderCode.setVisibility(View.VISIBLE);
-            tvOrderCode.setText(checkResult.getOrderCode());
-        }
 
         int col = R.color.scan_result_unknown;
         int default_string = R.string.err_unknown;
@@ -244,17 +221,15 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
                 col = R.color.scan_result_err;
                 default_string = R.string.err_unknown;
                 break;
-            case INVALID:
+            case INPUT:
+                // TODO
                 col = R.color.scan_result_err;
-                default_string = R.string.scan_result_invalid;
+                default_string = R.string.err_unknown;
                 break;
-            case UNPAID:
+            case CONFIRMATION:
+                // TODO
                 col = R.color.scan_result_err;
-                default_string = R.string.scan_result_unpaid;
-                break;
-            case USED:
-                col = R.color.scan_result_warn;
-                default_string = R.string.scan_result_used;
+                default_string = R.string.err_unknown;
                 break;
             case VALID:
                 col = R.color.scan_result_ok;

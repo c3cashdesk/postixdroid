@@ -34,34 +34,6 @@
             android:gravity="center_horizontal"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:visibility="invisible" />
-
-        <TextView
-            android:id="@+id/tvTicketName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_below="@id/tvScanResult"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
-
-        <TextView
-            android:id="@+id/tvAttendeeName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_below="@id/tvTicketName"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
-
-        <TextView
-            android:id="@+id/tvOrderCode"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_below="@id/tvTicketName"
-            android:layout_toLeftOf="@id/tvAttendeeName"
-            android:layout_toStartOf="@id/tvAttendeeName"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
     </RelativeLayout>
 
     <me.dm7.barcodescanner.zxing.ZXingScannerView

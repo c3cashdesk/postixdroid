@@ -1,11 +1,10 @@
 package de.ccc.events.c6shdroid.net.api;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 
 import javax.net.ssl.SSLException;
 
@@ -17,44 +16,42 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class PretixApi {
-    public static final int API_VERSION = 2;
-    public static final MediaType JSON
-            = MediaType.parse("application/json; charset=utf-8");
+public class C6shApi {
+    public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
     private String url;
     private String key;
 
-    public PretixApi(String url, String key) {
+    public C6shApi(String url, String key) {
+        if (url.endsWith("/")) {
+            url = url.substring(0, url.length() - 1);
+        }
         this.url = url;
         this.key = key;
     }
 
-    public static PretixApi fromConfig(AppConfig config) {
-        return new PretixApi(config.getApiUrl(), config.getApiKey());
+    public static C6shApi fromConfig(AppConfig config) {
+        return new C6shApi(config.getApiUrl(), config.getApiKey());
     }
 
-    public JSONObject redeem(String secret) throws ApiException {
-        RequestBody body = new FormBody.Builder()
-                .add("secret", secret)
-                .build();
-        Request request = new Request.Builder()
-                .url(url + "redeem/?key=" + key)
-                .post(body)
-                .build();
-        return apiCall(request);
-    }
-
-    public JSONObject search(String query) throws ApiException {
-        Request request = null;
+    public JSONObject redeem(String secret, JSONObject options) throws ApiException {
+        JSONObject data = new JSONObject();
+        JSONArray positions = new JSONArray();
+        JSONObject position = options;
         try {
-            request = new Request.Builder()
-                    .url(url + "search/?key=" + key + "&query=" + URLEncoder.encode(query, "UTF-8"))
-                    .get()
-                    .build();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+            position.put("type", "redeem");
+            position.put("secret", secret);
+            positions.put(position);
+            data.put("positions", positions);
+        } catch (JSONException e) {
+            throw new ApiException("Error while creating the request.");
         }
+
+        Request request = new Request.Builder()
+                .addHeader("Authorization", "Token " + key)
+                .url(url + "/api/transactions/")
+                .post(RequestBody.create(JSON, data.toString()))
+                .build();
         return apiCall(request);
     }
 

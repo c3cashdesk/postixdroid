@@ -1,21 +1,20 @@
 package de.ccc.events.c6shdroid.check;
 
 
+import org.json.JSONObject;
+
 import java.util.List;
 
 public interface TicketCheckProvider {
 
     class CheckResult {
         public enum Type {
-            INVALID, VALID, USED, ERROR, UNPAID
+            VALID, ERROR, CONFIRMATION, INPUT
         }
 
         private Type type;
-        private String ticket;
-        private String variation;
-        private String attendee_name;
         private String message;
-        private String order_code;
+        private String missing_field;
 
         public CheckResult(Type type, String message) {
             this.type = type;
@@ -34,30 +33,6 @@ public interface TicketCheckProvider {
             this.type = type;
         }
 
-        public String getTicket() {
-            return ticket;
-        }
-
-        public void setTicket(String ticket) {
-            this.ticket = ticket;
-        }
-
-        public String getVariation() {
-            return variation;
-        }
-
-        public void setVariation(String variation) {
-            this.variation = variation;
-        }
-
-        public String getAttendee_name() {
-            return attendee_name;
-        }
-
-        public void setAttendee_name(String attendee_name) {
-            this.attendee_name = attendee_name;
-        }
-
         public String getMessage() {
             return message;
         }
@@ -66,12 +41,12 @@ public interface TicketCheckProvider {
             this.message = message;
         }
 
-        public String getOrderCode() {
-            return order_code;
+        public String getMissingField() {
+            return missing_field;
         }
 
-        public void setOrderCode(String order_code) {
-            this.order_code = order_code;
+        public void setMissingField(String missing_field) {
+            this.missing_field = missing_field;
         }
     }
 
@@ -79,8 +54,6 @@ public interface TicketCheckProvider {
 
         private String secret;
         private String ticket;
-        private String variation;
-        private String attendee_name;
         private String order_code;
         private boolean paid;
         private boolean redeemed;
@@ -119,22 +92,6 @@ public interface TicketCheckProvider {
             this.ticket = ticket;
         }
 
-        public String getVariation() {
-            return variation;
-        }
-
-        public void setVariation(String variation) {
-            this.variation = variation;
-        }
-
-        public String getAttendee_name() {
-            return attendee_name;
-        }
-
-        public void setAttendee_name(String attendee_name) {
-            this.attendee_name = attendee_name;
-        }
-
         public String getOrderCode() {
             return order_code;
         }
@@ -144,6 +101,6 @@ public interface TicketCheckProvider {
         }
     }
 
-    CheckResult check(String ticketid);
+    CheckResult check(String ticketid, JSONObject options);
     List<SearchResult> search(String query) throws CheckException;
 }

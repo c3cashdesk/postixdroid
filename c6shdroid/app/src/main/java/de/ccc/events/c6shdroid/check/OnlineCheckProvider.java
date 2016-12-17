@@ -2,90 +2,68 @@ package de.ccc.events.c6shdroid.check;
 
 import android.content.Context;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import de.ccc.events.c6shdroid.AppConfig;
 import de.ccc.events.c6shdroid.net.api.ApiException;
-import de.ccc.events.c6shdroid.net.api.PretixApi;
+import de.ccc.events.c6shdroid.net.api.C6shApi;
 
 public class OnlineCheckProvider implements TicketCheckProvider {
     private Context ctx;
-    private PretixApi api;
+    private C6shApi api;
     private AppConfig config;
 
     public OnlineCheckProvider(Context ctx) {
         this.ctx = ctx;
 
         this.config = new AppConfig(ctx);
-        this.api = PretixApi.fromConfig(config);
+        this.api = C6shApi.fromConfig(config);
     }
 
     @Override
-    public CheckResult check(String ticketid) {
+    public CheckResult check(String ticketid, JSONObject options) {
         try {
             CheckResult res = new CheckResult(CheckResult.Type.ERROR);
-            JSONObject response = api.redeem(ticketid);
-            String status = response.getString("status");
-            if ("ok".equals(status)) {
+            JSONObject response = api.redeem(ticketid, options);
+            boolean status = response.getBoolean("success");
+            if (status) {
                 res.setType(CheckResult.Type.VALID);
             } else {
-                String reason = response.optString("reason");
-                if ("already_redeemed".equals(reason)) {
-                    res.setType(CheckResult.Type.USED);
-                } else if ("unknown_ticket".equals(reason)) {
-                    res.setType(CheckResult.Type.INVALID);
-                } else if ("unpaid".equals(reason)) {
-                    res.setType(CheckResult.Type.UNPAID);
-                }
-            }
+                JSONArray positions = response.getJSONArray("positions");
+                JSONObject position = positions.getJSONObject(0);
 
-            if (response.has("data")) {
-                res.setTicket(response.getJSONObject("data").getString("item"));
-                res.setVariation(response.getJSONObject("data").getString("variation"));
-                res.setAttendee_name(response.getJSONObject("data").getString("attendee_name"));
-                res.setOrderCode(response.getJSONObject("data").getString("order"));
+                res.setMessage(position.optString("message"));
+                String type = position.optString("type");
+                if ("input".equals(type)) {
+                    res.setType(CheckResult.Type.INPUT);
+                } else if ("confirmation".equals(type)) {
+                    res.setType(CheckResult.Type.CONFIRMATION);
+                } else {
+                    res.setType(CheckResult.Type.ERROR);
+                }
             }
             return res;
         } catch (JSONException e) {
-            CheckResult cr = new CheckResult(CheckResult.Type.ERROR, "Invalid server response");
-            if (e.getCause() != null)
-                cr.setTicket(e.getCause().getMessage());
-            return cr;
+            if (e.getCause() != null) {
+                return new CheckResult(CheckResult.Type.ERROR, "Invalid server response: " + e.getCause().getMessage());
+            } else {
+                return new CheckResult(CheckResult.Type.ERROR, "Invalid server response");
+            }
         } catch (ApiException e) {
-            CheckResult cr = new CheckResult(CheckResult.Type.ERROR, e.getMessage());
-            if (e.getCause() != null)
-                cr.setTicket(e.getCause().getMessage());
-            return cr;
+            if (e.getCause() != null) {
+                return new CheckResult(CheckResult.Type.ERROR, e.getMessage() + ": " + e.getCause().getMessage());
+            } else {
+                return new CheckResult(CheckResult.Type.ERROR, e.getMessage());
+            }
         }
     }
 
     @Override
     public List<SearchResult> search(String query) throws CheckException {
-        try {
-            JSONObject response = api.search(query);
-
-            List<SearchResult> results = new ArrayList<>();
-            for (int i = 0; i < response.getJSONArray("results").length(); i++) {
-                JSONObject res = response.getJSONArray("results").getJSONObject(i);
-                SearchResult sr = new SearchResult();
-                sr.setAttendee_name(res.getString("attendee_name"));
-                sr.setTicket(res.getString("item"));
-                sr.setVariation(res.getString("variation"));
-                sr.setOrderCode(res.getString("order"));
-                sr.setSecret(res.getString("secret"));
-                sr.setRedeemed(res.getBoolean("redeemed"));
-                sr.setPaid(res.getBoolean("paid"));
-                results.add(sr);
-            }
-            return results;
-        } catch (JSONException e) {
-            throw new CheckException("Unknown server response");
-        } catch (ApiException e) {
-            throw new CheckException(e.getMessage());
-        }
+        return null;
     }
 }
