@@ -1,0 +1,16 @@
+language: android
+jdk: oraclejdk8
+sudo: false
+android:
+    components:
+        - tools
+        - platform-tools
+        - build-tools-24.0.1
+        - android-24
+        - extra-android-m2repository
+script:
+    - cd c6shdroid
+    - TERM=dumb ./gradlew check lint assembleDebug
+cache:
+    directories:
+        - $HOME/.gradle
