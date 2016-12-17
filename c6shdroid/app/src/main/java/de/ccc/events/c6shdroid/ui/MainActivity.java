@@ -43,7 +43,6 @@ import de.ccc.events.c6shdroid.AppConfig;
 import de.ccc.events.c6shdroid.R;
 import de.ccc.events.c6shdroid.check.OnlineCheckProvider;
 import de.ccc.events.c6shdroid.check.TicketCheckProvider;
-import de.ccc.events.c6shdroid.net.api.PretixApi;
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
 public class MainActivity extends AppCompatActivity implements ZXingScannerView.ResultHandler, MediaPlayer.OnCompletionListener {
@@ -150,17 +149,11 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
     private void handleConfigScanned(String s) {
         try {
             JSONObject jsonObject = new JSONObject(s);
-            if (jsonObject.getInt("version") != PretixApi.API_VERSION) {
-                displayScanResult(new TicketCheckProvider.CheckResult(
-                        TicketCheckProvider.CheckResult.Type.ERROR,
-                        getString(R.string.err_qr_version)));
-            } else {
-                config.setEventConfig(jsonObject.getString("url"), jsonObject.getString("key"));
-                checkProvider = new OnlineCheckProvider(this);
-                displayScanResult(new TicketCheckProvider.CheckResult(
-                        TicketCheckProvider.CheckResult.Type.VALID,
-                        getString(R.string.config_done)));
-            }
+            config.setSessionConfig(jsonObject.getString("url"), jsonObject.getString("key"));
+            checkProvider = new OnlineCheckProvider(this);
+            displayScanResult(new TicketCheckProvider.CheckResult(
+                    TicketCheckProvider.CheckResult.Type.VALID,
+                    getString(R.string.config_done)));
         } catch (JSONException e) {
             displayScanResult(new TicketCheckProvider.CheckResult(
                     TicketCheckProvider.CheckResult.Type.ERROR,
@@ -333,7 +326,7 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_clear_config:
-                config.resetEventConfig();
+                config.resetSessionConfig();
                 resetView();
                 return true;
             case R.id.action_autofocus:
@@ -350,14 +343,14 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
                 config.setSoundEnabled(!item.isChecked());
                 item.setChecked(!item.isChecked());
                 return true;
-            case R.id.action_search:
+            /*case R.id.action_search:
                 if (config.isConfigured()) {
                     Intent intent = new Intent(this, SearchActivity.class);
                     startActivity(intent);
                 } else {
                     Toast.makeText(this, R.string.not_configured, Toast.LENGTH_SHORT).show();
                 }
-                return true;
+                return true;*/
             case R.id.action_about:
                 asset_dialog(R.raw.about, R.string.about);
                 return true;

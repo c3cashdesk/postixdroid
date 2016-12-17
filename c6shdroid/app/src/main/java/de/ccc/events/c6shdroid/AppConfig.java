@@ -20,14 +20,14 @@ public class AppConfig {
         return prefs.contains(PREFS_KEY_API_URL);
     }
 
-    public void setEventConfig(String url, String key) {
+    public void setSessionConfig(String url, String key) {
         prefs.edit()
                 .putString(PREFS_KEY_API_URL, url)
                 .putString(PREFS_KEY_API_KEY, key)
                 .apply();
     }
 
-    public void resetEventConfig() {
+    public void resetSessionConfig() {
         prefs.edit()
                 .remove(PREFS_KEY_API_URL)
                 .remove(PREFS_KEY_API_KEY)
