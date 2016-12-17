@@ -5,8 +5,8 @@ import android.content.SharedPreferences;
 
 public class AppConfig {
     public static final String PREFS_NAME = "c6shdroid";
-    public static final String PREFS_KEY_API_URL = "pretix_api_url";
-    public static final String PREFS_KEY_API_KEY = "pretix_api_key";
+    public static final String PREFS_KEY_API_URL = "c6sh_api_url";
+    public static final String PREFS_KEY_API_KEY = "c6sh_api_key";
     public static final String PREFS_KEY_FLASHLIGHT = "flashlight";
     public static final String PREFS_KEY_AUTOFOCUS = "autofocus";
     public static final String PREFS_PLAY_AUDIO = "playaudio";
