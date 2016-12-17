@@ -2,6 +2,7 @@ package de.ccc.events.c6shdroid.ui;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.AssetFileDescriptor;
@@ -227,9 +228,7 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
                 default_string = R.string.err_unknown;
                 break;
             case CONFIRMATION:
-                // TODO
-                col = R.color.scan_result_err;
-                default_string = R.string.err_unknown;
+                askForConfirmation(checkResult);
                 break;
             case VALID:
                 col = R.color.scan_result_ok;
@@ -366,5 +365,37 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
         textView.setMovementMethod(LinkMovementMethod.getInstance());
 
         dialog.show();
+    }
+
+    protected void askForConfirmation(final TicketCheckProvider.CheckResult result) {
+        final AlertDialog dialog = new AlertDialog.Builder(this)
+                .setMessage(result.getMessage())
+                .setCancelable(true)
+                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        try {
+                            options.put(result.getMissingField(), true);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        state = State.LOADING;
+                        findViewById(R.id.tvScanResult).setVisibility(View.GONE);
+                        findViewById(R.id.pbScan).setVisibility(View.VISIBLE);
+                        new CheckTask().execute(last_secret);
+                        dialogInterface.dismiss();
+                    }
+                })
+                .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        resetView();
+                        dialogInterface.dismiss();
+                    }
+                })
+                .create();
+        dialog.show();
+
+
     }
 }

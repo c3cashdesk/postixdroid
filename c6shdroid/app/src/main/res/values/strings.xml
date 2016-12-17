@@ -28,4 +28,6 @@
     <string name="loading">Loading…</string>
     <string name="scan_result_redeemed">Ticket successfully redeemed.</string>
     <string name="about">About the app</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 </resources>

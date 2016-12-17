@@ -40,8 +40,10 @@ public class OnlineCheckProvider implements TicketCheckProvider {
                 String type = position.optString("type");
                 if ("input".equals(type)) {
                     res.setType(CheckResult.Type.INPUT);
+                    res.setMissingField(position.optString("missing_field"));
                 } else if ("confirmation".equals(type)) {
                     res.setType(CheckResult.Type.CONFIRMATION);
+                    res.setMissingField(position.optString("missing_field"));
                 } else {
                     res.setType(CheckResult.Type.ERROR);
                 }
