@@ -24,6 +24,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -223,9 +225,9 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
                 default_string = R.string.err_unknown;
                 break;
             case INPUT:
-                // TODO
                 col = R.color.scan_result_err;
                 default_string = R.string.err_unknown;
+                askForInput(checkResult);
                 break;
             case CONFIRMATION:
                 askForConfirmation(checkResult);
@@ -395,7 +397,40 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
                 })
                 .create();
         dialog.show();
+    }
 
-
+    protected void askForInput(final TicketCheckProvider.CheckResult result) {
+        final View view = LayoutInflater.from(this).inflate(R.layout.dialog_input, null, false);
+        final EditText etInput = (EditText) view.findViewById(R.id.input_value);
+        final AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle(result.getMessage())
+                .setView(view)
+                .setCancelable(true)
+                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        try {
+                            options.put(result.getMissingField(), etInput.getText().toString());
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        state = State.LOADING;
+                        findViewById(R.id.tvScanResult).setVisibility(View.GONE);
+                        findViewById(R.id.pbScan).setVisibility(View.VISIBLE);
+                        new CheckTask().execute(last_secret);
+                        dialogInterface.dismiss();
+                    }
+                })
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        resetView();
+                        dialogInterface.dismiss();
+                    }
+                })
+                .create();
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+        dialog.show();
+        etInput.requestFocus();
     }
 }

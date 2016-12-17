@@ -30,4 +30,5 @@
     <string name="about">About the app</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="ok">OK</string>
 </resources>
