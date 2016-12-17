@@ -2,11 +2,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="de.ccc.events.c6shdroid.ui.MainActivity">
-    <item
+    <!--<item
         android:id="@+id/action_search"
         android:title="@string/action_search"
         android:icon="@drawable/ic_keyboard_white_24dp"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="ifRoom" />-->
     <item
         android:id="@+id/action_flashlight"
         android:title="@string/action_flashlight"
