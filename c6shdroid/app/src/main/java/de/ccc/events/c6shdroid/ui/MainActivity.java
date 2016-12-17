@@ -95,7 +95,6 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
         resetView();
 
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setIcon(R.drawable.ic_logo);
     }
 
     @Override
