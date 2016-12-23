@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.content.res.AssetFileDescriptor;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,6 +19,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
+import android.text.format.Formatter;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -319,6 +321,9 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
                 config.setSoundEnabled(!item.isChecked());
                 item.setChecked(!item.isChecked());
                 return true;
+            case R.id.action_networkinfo:
+                show_network_info();
+                return true;
             /*case R.id.action_search:
                 if (config.isConfigured()) {
                     Intent intent = new Intent(this, SearchActivity.class);
@@ -333,6 +338,24 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void show_network_info() {
+        WifiManager wm = (WifiManager) getSystemService(WIFI_SERVICE);
+        String ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
+        String mac = wm.getConnectionInfo().getMacAddress();
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("WiFi IP address: ");
+        sb.append(ip);
+        sb.append("\nWiFi MAC address: ");
+        sb.append(mac);
+        final AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle(R.string.networkinfo)
+                .setMessage(sb.toString())
+                .setPositiveButton(R.string.dismiss, null)
+                .create();
+        dialog.show();
     }
 
     private void asset_dialog(@RawRes int htmlRes, @StringRes int title) {

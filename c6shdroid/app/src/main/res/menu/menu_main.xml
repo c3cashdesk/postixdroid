@@ -27,6 +27,10 @@
         android:title="@string/action_clear_config"
         app:showAsAction="never" />
     <item
+        android:id="@+id/action_networkinfo"
+        android:title="@string/networkinfo"
+        app:showAsAction="never" />
+    <item
         android:id="@+id/action_about"
         android:title="@string/about"
         app:showAsAction="never" />
