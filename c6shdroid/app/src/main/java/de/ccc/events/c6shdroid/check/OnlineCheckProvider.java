@@ -29,6 +29,9 @@ public class OnlineCheckProvider implements TicketCheckProvider {
         try {
             CheckResult res = new CheckResult(CheckResult.Type.ERROR);
             JSONObject response = api.redeem(ticketid, options);
+            if (!response.has("success") && response.has("detail")) {
+                return new CheckResult(CheckResult.Type.ERROR, response.getString("detail"));
+            }
             boolean status = response.getBoolean("success");
             if (status) {
                 res.setType(CheckResult.Type.VALID);
@@ -50,6 +53,7 @@ public class OnlineCheckProvider implements TicketCheckProvider {
             }
             return res;
         } catch (JSONException e) {
+            e.printStackTrace();
             if (e.getCause() != null) {
                 return new CheckResult(CheckResult.Type.ERROR, "Invalid server response: " + e.getCause().getMessage());
             } else {
