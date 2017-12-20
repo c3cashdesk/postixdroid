@@ -1,0 +1,42 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="de.ccc.events.postixdroid.ui.MainActivity">
+    <!--<item
+        android:id="@+id/action_search"
+        android:title="@string/action_search"
+        android:icon="@drawable/ic_keyboard_white_24dp"
+        app:showAsAction="ifRoom" />-->
+    <item
+        android:id="@+id/action_camera"
+        android:title="@string/action_camera"
+        android:checkable="true"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_flashlight"
+        android:title="@string/action_flashlight"
+        android:checkable="true"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_autofocus"
+        android:title="@string/action_autofocus"
+        android:checkable="true"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_play_sound"
+        android:title="@string/action_play_sound"
+        android:checkable="true"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_clear_config"
+        android:title="@string/action_clear_config"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_networkinfo"
+        android:title="@string/networkinfo"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_about"
+        android:title="@string/about"
+        app:showAsAction="never" />
+</menu>

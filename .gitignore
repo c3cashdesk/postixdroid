@@ -1,2 +1,5 @@
 /release.sh
 *.keystore
+.idea/
+build/
+*.iml
