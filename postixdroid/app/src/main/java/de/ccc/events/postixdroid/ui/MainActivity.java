@@ -351,8 +351,25 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_clear_config:
-                config.resetSessionConfig();
-                resetView();
+                final AlertDialog dialog = new AlertDialog.Builder(this)
+                        .setMessage(R.string.confirm_clear)
+                        .setCancelable(true)
+                        .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                config.resetSessionConfig();
+                                resetView();
+                                dialogInterface.dismiss();
+                            }
+                        })
+                        .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                            }
+                        })
+                        .create();
+                dialog.show();
                 return true;
             case R.id.action_autofocus:
                 config.setAutofocus(!item.isChecked());

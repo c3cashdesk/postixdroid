@@ -23,6 +23,7 @@
     <string name="action_search">Manuelle Suche</string>
     <string name="permission_required">Kameraberechtigung ist erforderlich</string>
     <string name="search_hint">Suche (min. 4 Zeichen)…</string>
+    <string name="confirm_clear">Willst du wirklich die Konfiguration zurücksetzen? Das Gerät wird dadurch nutzlos, bis du wieder einen Konfigurations-Code scannst.</string>
     <string name="not_configured">App ist noch nicht konfiguriert</string>
     <string name="status_redeemed">Eingelöst</string>
     <string name="status_unpaid">Unbezahlt</string>

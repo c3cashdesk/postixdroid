@@ -22,6 +22,7 @@
     <string name="permission_required">Camera permission is required</string>
     <string name="search_hint">Search (min. 4 characters)…</string>
     <string name="not_configured">App is not yet configured</string>
+    <string name="confirm_clear">Do you really want to reset the configuration? The device will be useless until you scan a new configuration code.</string>
     <string name="status_redeemed">Redeemed</string>
     <string name="status_unpaid">Unpaid</string>
     <string name="status_valid">Valid</string>
