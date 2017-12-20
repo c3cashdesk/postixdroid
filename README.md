@@ -1,7 +1,7 @@
-c6shdroid
-=========
+postixdroid
+===========
 
-Validates tickets against a c6sh server.
+Validates tickets against a postix server.
 
 
 License

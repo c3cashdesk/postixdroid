@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">postixdroid</string>
     <string name="err_qr_invalid">The scanned QR code is not valid.</string>
-    <string name="err_qr_version">Your app is not compatible with the version of c6sh on the server. Please check for updates.</string>
+    <string name="err_qr_version">Your app is not compatible with the version of postix on the server. Please check for updates.</string>
     <string name="config_done">Configuration processed. You can now start scanning tickets.</string>
     <string name="err_title">Error</string>
     <string name="dismiss">Dismiss</string>
