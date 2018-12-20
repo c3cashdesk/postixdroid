@@ -14,8 +14,8 @@
     <string name="scan_result_used">Ticket bereits eingelöst</string>
     <string name="scan_result_invalid">Ticket ungültig</string>
     <string name="scan_result_unpaid">Ticket nicht bezahlt</string>
-    <string name="hint_config">Scannen einen Konfigurations-Code ein</string>
-    <string name="hint_scan">Scannen ein Ticket ein</string>
+    <string name="hint_config">Scanne einen Konfigurations-Code ein</string>
+    <string name="hint_scan">Scanne ein Ticket ein</string>
     <string name="action_clear_config">Konfiguration zurücksetzen</string>
     <string name="action_request_resupply">Nachschub anfordern</string>
     <string name="action_autofocus">Autofokus</string>

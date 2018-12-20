@@ -29,7 +29,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.EditText;
+import android.widget.AutoCompleteTextView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -68,6 +68,7 @@ public class MainActivity extends AppCompatActivity implements CustomizedScanner
     private TicketCheckProvider checkProvider;
     private AppConfig config;
     private DataWedgeHelper dataWedgeHelper;
+    private AlertDialog dialog;
 
     private JSONObject options;
     private String last_secret;
@@ -213,6 +214,10 @@ public class MainActivity extends AppCompatActivity implements CustomizedScanner
     public void handleScan(String s) {
         if (config.getSoundEnabled()) mediaPlayer.start();
         resetView();
+
+        if (dialog != null && dialog.isShowing()) {
+            return;
+        }
 
         if (config.isConfigured()) {
             handleTicketScanned(s);
@@ -509,7 +514,7 @@ public class MainActivity extends AppCompatActivity implements CustomizedScanner
     }
 
     protected void askForConfirmation(final TicketCheckProvider.CheckResult result) {
-        final AlertDialog dialog = new AlertDialog.Builder(this)
+        dialog = new AlertDialog.Builder(this)
                 .setMessage(result.getMessage())
                 .setCancelable(true)
                 .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
@@ -540,8 +545,18 @@ public class MainActivity extends AppCompatActivity implements CustomizedScanner
 
     protected void askForInput(final TicketCheckProvider.CheckResult result) {
         final View view = LayoutInflater.from(this).inflate(R.layout.dialog_input, null, false);
-        final EditText etInput = (EditText) view.findViewById(R.id.input_value);
-        final AlertDialog dialog = new AlertDialog.Builder(this)
+        final AutoCompleteTextView etInput = (AutoCompleteTextView) view.findViewById(R.id.input_value);
+
+        if (result.getMissingField().startsWith("list_")) {
+            try {
+                AutoCompleteAdapter adapter = new AutoCompleteAdapter(this, Integer.parseInt(result.getMissingField().substring(5)));
+                etInput.setAdapter(adapter);
+            } catch (NumberFormatException ignored) {
+                ignored.printStackTrace();
+            }
+        }
+
+        dialog = new AlertDialog.Builder(this)
                 .setTitle(result.getMessage())
                 .setView(view)
                 .setCancelable(true)

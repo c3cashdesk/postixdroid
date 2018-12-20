@@ -50,6 +50,15 @@ public class PostixApi {
         return apiCall(request);
     }
 
+    public JSONObject listEntries(int listId, String query) throws ApiException {
+        Request request = new Request.Builder()
+                .addHeader("Authorization", "Token " + key)
+                .url(url + "/api/listconstraintentries/?listid=" + listId + "&search=" + query)
+                .get()
+                .build();
+        return apiCall(request);
+    }
+
     public JSONObject requestResupply() throws ApiException {
         JSONObject data = new JSONObject();
         Request request = new Request.Builder()
