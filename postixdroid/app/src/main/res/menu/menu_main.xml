@@ -28,6 +28,10 @@
         android:checkable="true"
         app:showAsAction="never" />
     <item
+        android:id="@+id/action_request_resupply"
+        android:title="@string/action_request_resupply"
+        app:showAsAction="never" />
+    <item
         android:id="@+id/action_clear_config"
         android:title="@string/action_clear_config"
         app:showAsAction="never" />

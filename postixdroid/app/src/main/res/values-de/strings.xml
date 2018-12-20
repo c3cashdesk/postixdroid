@@ -17,6 +17,7 @@
     <string name="hint_config">Scannen einen Konfigurations-Code ein</string>
     <string name="hint_scan">Scannen ein Ticket ein</string>
     <string name="action_clear_config">Konfiguration zurücksetzen</string>
+    <string name="action_request_resupply">Nachschub anfordern</string>
     <string name="action_autofocus">Autofokus</string>
     <string name="action_flashlight">Taschenlampe</string>
     <string name="action_camera">Interne Kamera</string>

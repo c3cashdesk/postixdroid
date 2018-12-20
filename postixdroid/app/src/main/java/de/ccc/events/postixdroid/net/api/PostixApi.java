@@ -34,6 +34,48 @@ public class PostixApi {
         return new PostixApi(config.getApiUrl(), config.getApiKey());
     }
 
+    public JSONObject pong(String identifier) throws ApiException {
+        JSONObject data = new JSONObject();
+        try {
+            data.put("pong", identifier);
+        } catch (JSONException e) {
+            throw new ApiException("Error while creating the request.");
+        }
+
+        Request request = new Request.Builder()
+                .addHeader("Authorization", "Token " + key)
+                .url(url + "/api/cashdesk/pong/")
+                .post(RequestBody.create(JSON, data.toString()))
+                .build();
+        return apiCall(request);
+    }
+
+    public JSONObject requestResupply() throws ApiException {
+        JSONObject data = new JSONObject();
+        Request request = new Request.Builder()
+                .addHeader("Authorization", "Token " + key)
+                .url(url + "/api/cashdesk/request-resupply/")
+                .post(RequestBody.create(JSON, data.toString()))
+                .build();
+        return apiCall(request);
+    }
+
+    public JSONObject supply(String identifier) throws ApiException {
+        JSONObject data = new JSONObject();
+        try {
+            data.put("identifier", identifier);
+        } catch (JSONException e) {
+            throw new ApiException("Error while creating the request.");
+        }
+
+        Request request = new Request.Builder()
+                .addHeader("Authorization", "Token " + key)
+                .url(url + "/api/cashdesk/supply/")
+                .post(RequestBody.create(JSON, data.toString()))
+                .build();
+        return apiCall(request);
+    }
+
     public JSONObject redeem(String secret, JSONObject options) throws ApiException {
         JSONObject data = new JSONObject();
         JSONArray positions = new JSONArray();

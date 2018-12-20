@@ -270,7 +270,7 @@ public class MainActivity extends AppCompatActivity implements CustomizedScanner
 
         @Override
         protected TicketCheckProvider.CheckResult doInBackground(String... params) {
-            if (params[0].matches("[0-9A-Za-z-]+")) {
+            if (params[0].matches("[0-9A-Za-z-]+") || params[0].matches("/(ping|supply|resupply).*")) {
                 return checkProvider.check(params[0], options);
             } else {
                 return new TicketCheckProvider.CheckResult(TicketCheckProvider.CheckResult.Type.ERROR, getString(R.string.scan_result_invalid));
@@ -404,6 +404,9 @@ public class MainActivity extends AppCompatActivity implements CustomizedScanner
                 config.setAutofocus(!item.isChecked());
                 qrView.setAutoFocus(!item.isChecked());
                 item.setChecked(!item.isChecked());
+                return true;
+            case R.id.action_request_resupply:
+                handleTicketScanned("/resupply");
                 return true;
             case R.id.action_flashlight:
                 config.setFlashlight(!item.isChecked());

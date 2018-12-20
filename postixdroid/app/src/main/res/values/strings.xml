@@ -15,6 +15,7 @@
     <string name="hint_config">Scan a configuration code to start</string>
     <string name="hint_scan">Scan a ticket code</string>
     <string name="action_clear_config">Reset session config</string>
+    <string name="action_request_resupply">Request resupply</string>
     <string name="action_autofocus">Autofocus</string>
     <string name="action_flashlight">Flashlight</string>
     <string name="action_camera">Internal Camera</string>

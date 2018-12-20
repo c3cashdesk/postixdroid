@@ -28,27 +28,50 @@ public class OnlineCheckProvider implements TicketCheckProvider {
     public CheckResult check(String ticketid, JSONObject options) {
         try {
             CheckResult res = new CheckResult(CheckResult.Type.ERROR);
-            JSONObject response = api.redeem(ticketid, options);
-            if (!response.has("success") && response.has("detail")) {
-                return new CheckResult(CheckResult.Type.ERROR, response.getString("detail"));
-            }
-            boolean status = response.getBoolean("success");
-            if (status) {
-                res.setType(CheckResult.Type.VALID);
+            if (ticketid.startsWith("/supply")) {
+                JSONObject response = api.supply(ticketid);
+                if (response.optBoolean("success", false)) {
+                    return new CheckResult(CheckResult.Type.VALID, "Supply registered.");
+                } else if (response.has("message")) {
+                    res.setMessage(response.getString("message"));
+                }
+            } else if (ticketid.startsWith("/resupply")) {
+                JSONObject response = api.requestResupply();
+                if (response.optBoolean("success", false)) {
+                    return new CheckResult(CheckResult.Type.VALID, "OK, Troubleshooter gets a notification!");
+                } else if (response.has("message")) {
+                    res.setMessage(response.getString("message"));
+                }
+            } else if (ticketid.startsWith("/ping")) {
+                JSONObject response = api.pong(ticketid);
+                if (response.optBoolean("success", false)) {
+                    return new CheckResult(CheckResult.Type.VALID, "Pong! Thanks :-)");
+                } else if (response.has("message")) {
+                    res.setMessage(response.getString("message"));
+                }
             } else {
-                JSONArray positions = response.getJSONArray("positions");
-                JSONObject position = positions.getJSONObject(0);
-
-                res.setMessage(position.optString("message"));
-                String type = position.optString("type");
-                if ("input".equals(type)) {
-                    res.setType(CheckResult.Type.INPUT);
-                    res.setMissingField(position.optString("missing_field"));
-                } else if ("confirmation".equals(type)) {
-                    res.setType(CheckResult.Type.CONFIRMATION);
-                    res.setMissingField(position.optString("missing_field"));
+                JSONObject response = api.redeem(ticketid, options);
+                if (!response.has("success") && response.has("detail")) {
+                    return new CheckResult(CheckResult.Type.ERROR, response.getString("detail"));
+                }
+                boolean status = response.getBoolean("success");
+                if (status) {
+                    res.setType(CheckResult.Type.VALID);
                 } else {
-                    res.setType(CheckResult.Type.ERROR);
+                    JSONArray positions = response.getJSONArray("positions");
+                    JSONObject position = positions.getJSONObject(0);
+
+                    res.setMessage(position.optString("message"));
+                    String type = position.optString("type");
+                    if ("input".equals(type)) {
+                        res.setType(CheckResult.Type.INPUT);
+                        res.setMissingField(position.optString("missing_field"));
+                    } else if ("confirmation".equals(type)) {
+                        res.setType(CheckResult.Type.CONFIRMATION);
+                        res.setMissingField(position.optString("missing_field"));
+                    } else {
+                        res.setType(CheckResult.Type.ERROR);
+                    }
                 }
             }
             return res;
