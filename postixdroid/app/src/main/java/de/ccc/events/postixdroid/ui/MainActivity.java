@@ -58,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
     }
 
     public static final int PERMISSIONS_REQUEST_CAMERA = 10001;
+    public static final int PERMISSIONS_REQUEST_WRITE_STORAGE = 10002;
 
     private ZXingScannerView qrView = null;
     private long lastScanTime;
@@ -67,6 +68,7 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
     private MediaPlayer mediaPlayer;
     private TicketCheckProvider checkProvider;
     private AppConfig config;
+    private DataWedgeHelper dataWedgeHelper;
 
     private JSONObject options;
     private String last_secret;
@@ -106,17 +108,37 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setLogo(R.drawable.ic_logo);
         getSupportActionBar().setDisplayUseLogoEnabled(true);
+
+        dataWedgeHelper = new DataWedgeHelper(this);
+        if (dataWedgeHelper.isInstalled()) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        PERMISSIONS_REQUEST_WRITE_STORAGE);
+            } else {
+                try {
+                    dataWedgeHelper.install();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
 
     private BroadcastReceiver scanReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            // Intent receiver for LECOM-manufactured hardware scanners
-            byte[] barcode = intent.getByteArrayExtra("barocode"); // sic!
-            int barocodelen = intent.getIntExtra("length", 0);
-            String barcodeStr = new String(barcode, 0, barocodelen);
-            handleScan(barcodeStr);
+            if (intent.hasExtra("com.symbol.datawedge.data_string")) {
+                // Zebra DataWedge
+                handleScan(intent.getStringExtra("com.symbol.datawedge.data_string"));
+            } else if (intent.hasExtra("barocode")) {
+                // Intent receiver for LECOM-manufactured hardware scanners
+                byte[] barcode = intent.getByteArrayExtra("barocode"); // sic!
+                int barocodelen = intent.getIntExtra("length", 0);
+                String barcodeStr = new String(barcode, 0, barocodelen);
+                handleScan(barcodeStr);
+            }
         }
 
     };
@@ -137,6 +159,13 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
                     finish();
                 }
             }
+            case PERMISSIONS_REQUEST_WRITE_STORAGE: {
+                try {
+                    dataWedgeHelper.install();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
@@ -150,8 +179,9 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
             resetView();
         } else {
             IntentFilter filter = new IntentFilter();
-            // Broadcast sent by Lecom scanners
+            // Broadcast sent by Lecom or Zebra scanners
             filter.addAction("scan.rcv.message");
+            filter.addAction("eu.pretix.SCAN");
             registerReceiver(scanReceiver, filter);
         }
     }
