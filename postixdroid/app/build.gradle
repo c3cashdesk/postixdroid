@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 27
-    buildToolsVersion '26.0.2'
+    buildToolsVersion '28.0.3'
 
     defaultConfig {
         applicationId "de.events.ccc.postixdroid"
@@ -45,9 +45,9 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:27.0.2'
-    compile 'com.android.support:design:27.0.2'
-    compile 'me.dm7.barcodescanner:zxing:1.9.3'
-    compile 'com.squareup.okhttp3:okhttp:3.9.0'
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.android.support:appcompat-v7:27.1.1'
+    implementation 'com.android.support:design:27.1.1'
+    implementation 'me.dm7.barcodescanner:zxing:1.9.3'
+    implementation 'com.squareup.okhttp3:okhttp:3.10.0'
 }
