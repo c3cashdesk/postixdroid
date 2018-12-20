@@ -36,7 +36,7 @@
             android:visibility="invisible" />
     </RelativeLayout>
 
-    <me.dm7.barcodescanner.zxing.ZXingScannerView
+    <de.ccc.events.postixdroid.ui.CustomizedScannerView
         android:id="@+id/qrdecoderview"
         android:layout_width="match_parent"
         android:layout_height="fill_parent"

@@ -7,4 +7,6 @@
     <color name="scan_result_ok">#dd5cb85c</color>
     <color name="scan_result_warn">#ddF0AD4E</color>
     <color name="scan_result_err">#ddFF0042</color>
+    <color name="viewfinder_mask">#00000000</color>
+    <color name="viewfinder_border">#00000000</color>
 </resources>

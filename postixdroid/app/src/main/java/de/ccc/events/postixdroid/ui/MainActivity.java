@@ -50,9 +50,8 @@ import de.ccc.events.postixdroid.AppConfig;
 import de.ccc.events.postixdroid.R;
 import de.ccc.events.postixdroid.check.OnlineCheckProvider;
 import de.ccc.events.postixdroid.check.TicketCheckProvider;
-import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
-public class MainActivity extends AppCompatActivity implements ZXingScannerView.ResultHandler, MediaPlayer.OnCompletionListener {
+public class MainActivity extends AppCompatActivity implements CustomizedScannerView.ResultHandler, MediaPlayer.OnCompletionListener {
     public enum State {
         SCANNING, LOADING, RESULT
     }
@@ -60,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
     public static final int PERMISSIONS_REQUEST_CAMERA = 10001;
     public static final int PERMISSIONS_REQUEST_WRITE_STORAGE = 10002;
 
-    private ZXingScannerView qrView = null;
+    private CustomizedScannerView qrView = null;
     private long lastScanTime;
     private String lastScanCode;
     private State state = State.SCANNING;
@@ -82,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
 
         setContentView(R.layout.activity_main);
 
-        qrView = (ZXingScannerView) findViewById(R.id.qrdecoderview);
+        qrView = (CustomizedScannerView) findViewById(R.id.qrdecoderview);
         qrView.setResultHandler(this);
         qrView.setAutoFocus(config.getAutofocus());
         qrView.setFlash(config.getFlashlight());
