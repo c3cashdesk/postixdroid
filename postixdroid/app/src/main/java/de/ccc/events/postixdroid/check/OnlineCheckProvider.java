@@ -57,6 +57,10 @@ public class OnlineCheckProvider implements TicketCheckProvider {
                 boolean status = response.getBoolean("success");
                 if (status) {
                     res.setType(CheckResult.Type.VALID);
+                    if (response.getJSONArray("positions").getJSONObject(0).has("preorder_position")) {
+                        JSONObject pp = response.getJSONArray("positions").getJSONObject(0).getJSONObject("preorder_position");
+                        res.setMessage(pp.getString("product_name") + "\n" + pp.optString("pack_list", ""));
+                    }
                 } else {
                     JSONArray positions = response.getJSONArray("positions");
                     JSONObject position = positions.getJSONObject(0);
