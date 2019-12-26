@@ -64,11 +64,20 @@ public class MainActivity extends AppCompatActivity implements CustomizedScanner
     private String lastScanCode;
     private State state = State.SCANNING;
     private Handler timeoutHandler;
+    private Handler timerHandler;
+    private long timerStart;
     private MediaPlayer mediaPlayer;
     private TicketCheckProvider checkProvider;
     private AppConfig config;
     private DataWedgeHelper dataWedgeHelper;
     private AlertDialog dialog;
+
+    Runnable timerUpdate = new Runnable() {
+        @Override
+        public void run() {
+            updateTimer(true);
+        }
+    };
 
     private JSONObject options;
     private String last_secret;
@@ -102,6 +111,7 @@ public class MainActivity extends AppCompatActivity implements CustomizedScanner
         mediaPlayer = buildMediaPlayer(this);
 
         timeoutHandler = new Handler();
+        timerHandler = new Handler();
 
         resetView();
 
@@ -123,6 +133,7 @@ public class MainActivity extends AppCompatActivity implements CustomizedScanner
                 }
             }
         }
+        timerHandler.postDelayed(timerUpdate, 100);
     }
 
 
@@ -248,6 +259,7 @@ public class MainActivity extends AppCompatActivity implements CustomizedScanner
         options = new JSONObject();
         state = State.LOADING;
         findViewById(R.id.tvScanResult).setVisibility(View.GONE);
+        findViewById(R.id.tvTimer).setVisibility(View.GONE);
         findViewById(R.id.pbScan).setVisibility(View.VISIBLE);
         new CheckTask().execute(s);
     }
@@ -256,6 +268,7 @@ public class MainActivity extends AppCompatActivity implements CustomizedScanner
         TextView tvScanResult = (TextView) findViewById(R.id.tvScanResult);
         timeoutHandler.removeCallbacksAndMessages(null);
         tvScanResult.setVisibility(View.VISIBLE);
+        findViewById(R.id.tvTimer).setVisibility(View.GONE);
         ((TextView) findViewById(R.id.tvScanResult)).setText("");
         findViewById(R.id.rlScanStatus).setBackgroundColor(
                 ContextCompat.getColor(this, R.color.scan_result_unknown));
@@ -290,9 +303,19 @@ public class MainActivity extends AppCompatActivity implements CustomizedScanner
         }
     }
 
-    private void displayScanResult(TicketCheckProvider.CheckResult checkResult) {
+    private void updateTimer(boolean repeat) {
+        ((TextView) findViewById(R.id.tvTimer)).setText(String.valueOf(Math.round((System.currentTimeMillis() - timerStart) / 1000)));
+        if (repeat) {
+            timerHandler.postDelayed(timerUpdate, 500);
+        }
+    }
 
-        TextView tvScanResult = (TextView) findViewById(R.id.tvScanResult);
+    private void displayScanResult(TicketCheckProvider.CheckResult checkResult) {
+        TextView tvScanResult = findViewById(R.id.tvScanResult);
+        timerStart = System.currentTimeMillis();
+        updateTimer(false);
+        findViewById(R.id.tvTimer).setVisibility(View.VISIBLE);
+
 
         state = State.RESULT;
         findViewById(R.id.pbScan).setVisibility(View.INVISIBLE);
