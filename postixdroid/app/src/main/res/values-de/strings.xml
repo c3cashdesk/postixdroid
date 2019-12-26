@@ -22,6 +22,7 @@
     <string name="action_flashlight">Taschenlampe</string>
     <string name="action_camera">Interne Kamera</string>
     <string name="action_search">Manuelle Suche</string>
+    <string name="doublescan">Doppelscan ignoriert</string>
     <string name="permission_required">Kameraberechtigung ist erforderlich</string>
     <string name="search_hint">Suche (min. 4 Zeichen)…</string>
     <string name="confirm_clear">Willst du wirklich die Konfiguration zurücksetzen? Das Gerät wird dadurch nutzlos, bis du wieder einen Konfigurations-Code scannst.</string>

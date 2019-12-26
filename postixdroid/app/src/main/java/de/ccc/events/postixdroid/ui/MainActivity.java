@@ -202,22 +202,24 @@ public class MainActivity extends AppCompatActivity implements CustomizedScanner
             qrView.resumeCameraPreview(this);
         }
         String s = rawResult.getText();
-        if (s.equals(lastScanCode) && System.currentTimeMillis() - lastScanTime < 5000) {
-            return;
-        }
-        lastScanTime = System.currentTimeMillis();
-        lastScanCode = s;
 
         handleScan(s);
     }
 
     public void handleScan(String s) {
-        if (config.getSoundEnabled()) mediaPlayer.start();
-        resetView();
-
         if (dialog != null && dialog.isShowing()) {
             return;
         }
+
+        if (s.equals(lastScanCode) && System.currentTimeMillis() - lastScanTime < 5000) {
+            Toast.makeText(this, R.string.doublescan, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (config.getSoundEnabled()) mediaPlayer.start();
+        resetView();
+
+        lastScanTime = System.currentTimeMillis();
+        lastScanCode = s;
 
         if (config.isConfigured()) {
             handleTicketScanned(s);
