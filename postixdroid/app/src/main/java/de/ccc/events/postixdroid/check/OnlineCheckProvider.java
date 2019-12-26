@@ -28,7 +28,7 @@ public class OnlineCheckProvider implements TicketCheckProvider {
     public CheckResult check(String ticketid, JSONObject options) {
         try {
             CheckResult res = new CheckResult(CheckResult.Type.ERROR);
-            if (ticketid.startsWith("/supply")) {
+            if (ticketid.startsWith("/supply") || (ticketid.startsWith("/resupply") && ticketid.length() > 15)) {
                 JSONObject response = api.supply(ticketid);
                 if (response.optBoolean("success", false)) {
                     return new CheckResult(CheckResult.Type.VALID, "Supply registered.");
