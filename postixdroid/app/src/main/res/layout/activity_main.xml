@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:keepScreenOn="true">
@@ -23,7 +24,8 @@
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:indeterminateTint="@color/brand_dark"
-            android:visibility="invisible" />
+            android:visibility="invisible"
+            tools:ignore="UnusedAttribute" />
 
         <TextView
             android:id="@+id/tvScanResult"

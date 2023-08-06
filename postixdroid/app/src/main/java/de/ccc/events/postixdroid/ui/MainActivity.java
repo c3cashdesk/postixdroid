@@ -452,68 +452,68 @@ public class MainActivity extends AppCompatActivity implements CustomizedScanner
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_clear_config:
-                final AlertDialog dialog = new AlertDialog.Builder(this)
-                        .setMessage(R.string.confirm_clear)
-                        .setCancelable(true)
-                        .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                config.resetSessionConfig();
-                                resetView();
-                                dialogInterface.dismiss();
-                            }
-                        })
-                        .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                dialogInterface.dismiss();
-                            }
-                        })
-                        .create();
-                dialog.show();
-                return true;
-            case R.id.action_autofocus:
-                config.setAutofocus(!item.isChecked());
-                qrView.setAutoFocus(!item.isChecked());
-                item.setChecked(!item.isChecked());
-                return true;
-            case R.id.action_request_resupply:
-                handleTicketScanned("/resupply");
-                return true;
-            case R.id.action_flashlight:
-                config.setFlashlight(!item.isChecked());
-                if (config.getCamera()) {
-                    qrView.setFlash(!item.isChecked());
-                }
-                item.setChecked(!item.isChecked());
-                return true;
-            case R.id.action_camera:
-                if (config.getCamera()) {
-                    qrView.stopCamera();
-                    IntentFilter filter = new IntentFilter();
-                    // Broadcast sent by Lecom scanners
-                    filter.addAction("scan.rcv.message");
-                    registerReceiver(scanReceiver, filter);
-                } else {
-                    unregisterReceiver(scanReceiver);
-                    qrView.setResultHandler(this);
-                    qrView.startCamera();
-                    qrView.setAutoFocus(config.getAutofocus());
-                }
+        int itemId = item.getItemId();
+        if (itemId == R.id.action_clear_config) {
+            final AlertDialog dialog = new AlertDialog.Builder(this)
+                    .setMessage(R.string.confirm_clear)
+                    .setCancelable(true)
+                    .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            config.resetSessionConfig();
+                            resetView();
+                            dialogInterface.dismiss();
+                        }
+                    })
+                    .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss();
+                        }
+                    })
+                    .create();
+            dialog.show();
+            return true;
+        } else if (itemId == R.id.action_autofocus) {
+            config.setAutofocus(!item.isChecked());
+            qrView.setAutoFocus(!item.isChecked());
+            item.setChecked(!item.isChecked());
+            return true;
+        } else if (itemId == R.id.action_request_resupply) {
+            handleTicketScanned("/resupply");
+            return true;
+        } else if (itemId == R.id.action_flashlight) {
+            config.setFlashlight(!item.isChecked());
+            if (config.getCamera()) {
+                qrView.setFlash(!item.isChecked());
+            }
+            item.setChecked(!item.isChecked());
+            return true;
+        } else if (itemId == R.id.action_camera) {
+            if (config.getCamera()) {
+                qrView.stopCamera();
+                IntentFilter filter = new IntentFilter();
+                // Broadcast sent by Lecom scanners
+                filter.addAction("scan.rcv.message");
+                registerReceiver(scanReceiver, filter);
+            } else {
+                unregisterReceiver(scanReceiver);
+                qrView.setResultHandler(this);
+                qrView.startCamera();
+                qrView.setAutoFocus(config.getAutofocus());
+            }
 
-                config.setCamera(!item.isChecked());
-                item.setChecked(!item.isChecked());
-                resetView();
-                return true;
-            case R.id.action_play_sound:
-                config.setSoundEnabled(!item.isChecked());
-                item.setChecked(!item.isChecked());
-                return true;
-            case R.id.action_networkinfo:
-                show_network_info();
-                return true;
+            config.setCamera(!item.isChecked());
+            item.setChecked(!item.isChecked());
+            resetView();
+            return true;
+        } else if (itemId == R.id.action_play_sound) {
+            config.setSoundEnabled(!item.isChecked());
+            item.setChecked(!item.isChecked());
+            return true;
+        } else if (itemId == R.id.action_networkinfo) {
+            show_network_info();
+            return true;
             /*case R.id.action_search:
                 if (config.isConfigured()) {
                     Intent intent = new Intent(this, SearchActivity.class);
@@ -522,12 +522,11 @@ public class MainActivity extends AppCompatActivity implements CustomizedScanner
                     Toast.makeText(this, R.string.not_configured, Toast.LENGTH_SHORT).show();
                 }
                 return true;*/
-            case R.id.action_about:
-                asset_dialog(R.raw.about, R.string.about);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        } else if (itemId == R.id.action_about) {
+            asset_dialog(R.raw.about, R.string.about);
+            return true;
         }
+        return super.onOptionsItemSelected(item);
     }
 
     private void show_network_info() {
