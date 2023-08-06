@@ -9,6 +9,7 @@ android {
         targetSdkVersion 33
         versionCode 4
         versionName "camp23.0"
+        multiDexEnabled true
     }
 
     lintOptions {
@@ -45,6 +46,7 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.android.support:multidex:1.0.3'
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.9.0'
     implementation 'me.dm7.barcodescanner:zxing:1.9.8'

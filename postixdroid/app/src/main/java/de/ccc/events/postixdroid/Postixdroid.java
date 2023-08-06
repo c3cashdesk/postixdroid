@@ -2,7 +2,9 @@ package de.ccc.events.postixdroid;
 
 import android.app.Application;
 
-public class Postixdroid extends Application {
+import androidx.multidex.MultiDexApplication;
+
+public class Postixdroid extends MultiDexApplication {
     /*
      * It is not a security problem that the keystore password is hardcoded in plain text.
      * It would be only relevant in a case in which the attack would have either root access on the
