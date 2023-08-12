@@ -209,40 +209,7 @@ public class MainActivity extends AppCompatActivity implements CustomizedScanner
             qrView.setAutoFocus(config.getAutofocus());
             resetView();
         } else {
-            IntentFilter filter = new IntentFilter();
-
-            // LECOM
-            // Active by default
-            filter.addAction("scan.rcv.message");
-
-            // Zebra DataWedge
-            // Needs manual configuration in DataWedge
-            filter.addAction("eu.pretix.SCAN");
-            filter.addAction("de.ccc.events.postixdroid.SCAN");
-
-            // Bluebird
-            // Active by default
-            filter.addAction("kr.co.bluebird.android.bbapi.action.BARCODE_CALLBACK_DECODING_DATA");
-
-            // NewLand
-            // Configure broadcast in Quick Setting > Scan Setting > Output Mode > Output via API
-            filter.addAction("nlscan.action.SCANNER_RESULT");
-
-            // Honeywell
-            // Configure via Settings > Scan Settings > Internal Scanner > Default Profile > Data
-            // Processing Settings > Scan to Intent
-            filter.addAction("com.honeywell.intent.action.SCAN_RESULT");
-
-            // SEUIC AUTOID, also known as Concept FuturePAD
-            // Configure via Scan Tool > Settings > Barcode Send Model > Broadcast
-            filter.addAction("com.android.server.scannerservice.broadcast");
-
-            // Sunmi, e.g. L2s
-            // Active by default
-            // Configure via Settings > System > Scanner Setting > Data Output Mode > Output via Broadcast
-            filter.addAction("com.android.scanner.ACTION_DATA_CODE_RECEIVED");
-
-            registerReceiver(scanReceiver, filter);
+            registerHardwareScanner();
         }
     }
 
@@ -504,39 +471,7 @@ public class MainActivity extends AppCompatActivity implements CustomizedScanner
         } else if (itemId == R.id.action_camera) {
             if (config.getCamera()) {
                 qrView.stopCamera();
-                IntentFilter filter = new IntentFilter();
-                // LECOM
-                // Active by default
-                filter.addAction("scan.rcv.message");
-
-                // Zebra DataWedge
-                // Needs manual configuration in DataWedge
-                filter.addAction("eu.pretix.SCAN");
-
-                // Bluebird
-                // Active by default
-                filter.addAction("kr.co.bluebird.android.bbapi.action.BARCODE_CALLBACK_DECODING_DATA");
-
-                // NewLand
-                // Configure broadcast in Quick Setting > Scan Setting > Output Mode > Output via API
-                filter.addAction("nlscan.action.SCANNER_RESULT");
-
-                // Honeywell
-                // Configure via Settings > Scan Settings > Internal Scanner > Default Profile > Data
-                // Processing Settings > Scan to Intent
-                filter.addAction("com.honeywell.intent.action.SCAN_RESULT");
-
-                // SEUIC AUTOID, also known as Concept FuturePAD
-                // Configure via Scan Tool > Settings > Barcode Send Model > Broadcast
-                filter.addAction("com.android.server.scannerservice.broadcast");
-
-                // Sunmi, e.g. L2s
-                // Active by default
-                // Configure via Settings > System > Scanner Setting > Data Output Mode > Output via Broadcast
-                filter.addAction("com.android.scanner.ACTION_DATA_CODE_RECEIVED");
-                filter.addAction("com.sunmi.scanner.ACTION_DATA_CODE_RECEIVED");
-
-                registerReceiver(scanReceiver, filter);
+                registerHardwareScanner();
             } else {
                 unregisterReceiver(scanReceiver);
                 qrView.setResultHandler(this);
@@ -714,5 +649,42 @@ public class MainActivity extends AppCompatActivity implements CustomizedScanner
         if (config.getSoundEnabled() && mediaPlayers.containsKey(resourceId)) {
             mediaPlayers.get(resourceId).start();
         }
+    }
+
+    private void registerHardwareScanner() {
+        IntentFilter filter = new IntentFilter();
+        // LECOM
+        // Active by default
+        filter.addAction("scan.rcv.message");
+
+        // Zebra DataWedge
+        // Needs manual configuration in DataWedge
+        filter.addAction("eu.pretix.SCAN");
+        filter.addAction("de.ccc.events.postixdroid.SCAN");
+
+        // Bluebird
+        // Active by default
+        filter.addAction("kr.co.bluebird.android.bbapi.action.BARCODE_CALLBACK_DECODING_DATA");
+
+        // NewLand
+        // Configure broadcast in Quick Setting > Scan Setting > Output Mode > Output via API
+        filter.addAction("nlscan.action.SCANNER_RESULT");
+
+        // Honeywell
+        // Configure via Settings > Scan Settings > Internal Scanner > Default Profile > Data
+        // Processing Settings > Scan to Intent
+        filter.addAction("com.honeywell.intent.action.SCAN_RESULT");
+
+        // SEUIC AUTOID, also known as Concept FuturePAD
+        // Configure via Scan Tool > Settings > Barcode Send Model > Broadcast
+        filter.addAction("com.android.server.scannerservice.broadcast");
+
+        // Sunmi, e.g. L2s
+        // Active by default
+        // Configure via Settings > System > Scanner Setting > Data Output Mode > Output via Broadcast
+        filter.addAction("com.android.scanner.ACTION_DATA_CODE_RECEIVED");
+        filter.addAction("com.sunmi.scanner.ACTION_DATA_CODE_RECEIVED");
+
+        registerReceiver(scanReceiver, filter);
     }
 }
