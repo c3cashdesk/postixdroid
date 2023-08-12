@@ -28,6 +28,11 @@
         android:checkable="true"
         app:showAsAction="never" />
     <item
+        android:id="@+id/action_dhl"
+        android:title="@string/action_dhl"
+        android:checkable="true"
+        app:showAsAction="never" />
+    <item
         android:id="@+id/action_request_resupply"
         android:title="@string/action_request_resupply"
         app:showAsAction="never" />

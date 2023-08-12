@@ -10,6 +10,7 @@ public class AppConfig {
     public static final String PREFS_KEY_FLASHLIGHT = "flashlight";
     public static final String PREFS_KEY_AUTOFOCUS = "autofocus";
     public static final String PREFS_PLAY_AUDIO = "playaudio";
+    public static final String PREFS_DHL = "dhl";
     public static final String PREFS_KEY_CAMERA = "camera";
     private SharedPreferences prefs;
 
@@ -55,6 +56,10 @@ public class AppConfig {
         return prefs.getBoolean(PREFS_PLAY_AUDIO, true);
     }
 
+    public boolean getDHLEnabled() {
+        return prefs.getBoolean(PREFS_DHL, false);
+    }
+
     public void setFlashlight(boolean val) {
         prefs.edit().putBoolean(PREFS_KEY_FLASHLIGHT, val).apply();
     }
@@ -67,6 +72,9 @@ public class AppConfig {
         prefs.edit().putBoolean(PREFS_PLAY_AUDIO, val).apply();
     }
 
+    public void setDHLEnabled(boolean val) {
+        prefs.edit().putBoolean(PREFS_DHL, val).apply();
+    }
 
     public boolean getCamera() {
         return prefs.getBoolean(PREFS_KEY_CAMERA, true);

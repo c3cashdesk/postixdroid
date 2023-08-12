@@ -22,6 +22,7 @@
     <string name="action_flashlight">Taschenlampe</string>
     <string name="action_camera">Interne Kamera</string>
     <string name="action_search">Manuelle Suche</string>
+    <string name="action_dhl">DHL</string>
     <string name="doublescan">Doppelscan ignoriert</string>
     <string name="permission_required">Kameraberechtigung ist erforderlich</string>
     <string name="search_hint">Suche (min. 4 Zeichen)…</string>

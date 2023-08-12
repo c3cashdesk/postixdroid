@@ -20,6 +20,7 @@
     <string name="action_flashlight">Flashlight</string>
     <string name="action_camera">Internal Camera</string>
     <string name="action_search">Manual search</string>
+    <string name="action_dhl">DHL</string>
     <string name="permission_required">Camera permission is required</string>
     <string name="search_hint">Search (min. 4 characters)…</string>
     <string name="not_configured">App is not yet configured</string>
