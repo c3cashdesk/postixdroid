@@ -703,11 +703,12 @@ public class MainActivity extends AppCompatActivity implements CustomizedScanner
 
     private void playSound(Integer resourceId) {
         // DHL Mode will disable scan-beep and replace successful scan with DHL-beep
-        if (config.getDHLEnabled())
+        if (config.getDHLEnabled()) {
             if (resourceId == R.raw.enter) {
                 resourceId = R.raw.dhl;
             } else if (resourceId == R.raw.beep) {
                 return;
+            }
         }
 
         if (config.getSoundEnabled() && mediaPlayers.containsKey(resourceId)) {
