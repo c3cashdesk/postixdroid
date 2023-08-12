@@ -20,6 +20,8 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.provider.MediaStore;
 import android.text.Html;
 import android.text.format.Formatter;
 import android.text.method.LinkMovementMethod;
@@ -44,7 +46,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import de.ccc.events.postixdroid.AppConfig;
 import de.ccc.events.postixdroid.R;
@@ -66,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements CustomizedScanner
     private Handler timeoutHandler;
     private Handler timerHandler;
     private long timerStart;
-    private MediaPlayer mediaPlayer;
+    private Map<Integer, MediaPlayer> mediaPlayers = new HashMap<>();
     private TicketCheckProvider checkProvider;
     private AppConfig config;
     private DataWedgeHelper dataWedgeHelper;
@@ -108,7 +113,7 @@ public class MainActivity extends AppCompatActivity implements CustomizedScanner
         qrView.setFormats(formats);
 
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
-        mediaPlayer = buildMediaPlayer(this);
+        buildMediaPlayer(this);
 
         timeoutHandler = new Handler();
         timerHandler = new Handler();
@@ -270,7 +275,7 @@ public class MainActivity extends AppCompatActivity implements CustomizedScanner
             Toast.makeText(this, R.string.doublescan, Toast.LENGTH_SHORT).show();
             return;
         }
-        if (config.getSoundEnabled()) mediaPlayer.start();
+        playSound(R.raw.beep);
         resetView();
 
         lastScanTime = System.currentTimeMillis();
@@ -372,18 +377,22 @@ public class MainActivity extends AppCompatActivity implements CustomizedScanner
             case ERROR:
                 col = R.color.scan_result_err;
                 default_string = R.string.err_unknown;
+                playSound(R.raw.error);
                 break;
             case INPUT:
                 col = R.color.scan_result_err;
                 default_string = R.string.err_unknown;
+                playSound(R.raw.attention);
                 askForInput(checkResult);
                 break;
             case CONFIRMATION:
+                playSound(R.raw.attention);
                 askForConfirmation(checkResult);
                 break;
             case VALID:
                 col = R.color.scan_result_ok;
                 default_string = R.string.scan_result_valid;
+                playSound(R.raw.enter);
                 break;
         }
 
@@ -407,26 +416,29 @@ public class MainActivity extends AppCompatActivity implements CustomizedScanner
         mp.seekTo(0);
     }
 
-    private MediaPlayer buildMediaPlayer(Context activity) {
-        mediaPlayer = new MediaPlayer();
-        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-        mediaPlayer.setOnCompletionListener(this);
-        // mediaPlayer.setOnErrorListener(this);
-        try {
-            AssetFileDescriptor file = activity.getResources()
-                    .openRawResourceFd(R.raw.beep);
+    private void buildMediaPlayer(Context activity) {
+        ArrayList<Integer> resourceIds = new ArrayList<>(Arrays.asList(R.raw.enter, R.raw.exit, R.raw.error, R.raw.beep, R.raw.attention, R.raw.dhl));
+
+        for (int r = 0; r < resourceIds.size(); r++) {
+            MediaPlayer mediaPlayer = new MediaPlayer();
+            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+            mediaPlayer.setOnCompletionListener(this);
+            // mediaPlayer.setOnErrorListener(this);
             try {
-                mediaPlayer.setDataSource(file.getFileDescriptor(),
-                        file.getStartOffset(), file.getLength());
-            } finally {
-                file.close();
+                AssetFileDescriptor file = activity.getResources()
+                        .openRawResourceFd(resourceIds.get(r));
+                try {
+                    mediaPlayer.setDataSource(file.getFileDescriptor(),
+                            file.getStartOffset(), file.getLength());
+                } finally {
+                    file.close();
+                }
+                mediaPlayer.setVolume(0.10f, 0.10f);
+                mediaPlayer.prepare();
+                mediaPlayers.put(resourceIds.get(r), mediaPlayer);
+            } catch (IOException ioe) {
+                mediaPlayer.release();
             }
-            mediaPlayer.setVolume(0.10f, 0.10f);
-            mediaPlayer.prepare();
-            return mediaPlayer;
-        } catch (IOException ioe) {
-            mediaPlayer.release();
-            return null;
         }
     }
 
@@ -538,6 +550,10 @@ public class MainActivity extends AppCompatActivity implements CustomizedScanner
             return true;
         } else if (itemId == R.id.action_play_sound) {
             config.setSoundEnabled(!item.isChecked());
+            item.setChecked(!item.isChecked());
+            return true;
+        } else if (itemId == R.id.action_dhl) {
+            config.setDHLEnabled(!item.isChecked());
             item.setChecked(!item.isChecked());
             return true;
         } else if (itemId == R.id.action_networkinfo) {
@@ -683,5 +699,20 @@ public class MainActivity extends AppCompatActivity implements CustomizedScanner
         dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
         dialog.show();
         etInput.requestFocus();
+    }
+
+    private void playSound(Integer resourceId) {
+        // DHL Mode will disable scan-beep and replace successful scan with DHL-beep
+        if (config.getDHLEnabled()) {
+            if (resourceId == R.raw.enter) {
+                resourceId = R.raw.dhl;
+            } else if (resourceId == R.raw.beep) {
+                return;
+            }
+        }
+
+        if (config.getSoundEnabled() && mediaPlayers.containsKey(resourceId)) {
+            mediaPlayers.get(resourceId).start();
+        }
     }
 }
