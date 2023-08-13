@@ -3,6 +3,7 @@ on:
   push:
     tags:
       - 'v*'
+      - 'camp23.*'
 jobs:
   build:
     name: Build and sign APK
