@@ -1,0 +1,18 @@
+[versions]
+agp = "8.7.3"
+appcompat = "1.6.1"
+material = "1.9.0"
+multidex = "1.0.3"
+zxing = "1.9.8"
+okhttp = "4.10.0"
+
+[libraries]
+appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+multidex = { group = "com.android.support", name = "multidex", version.ref = "multidex" }
+zxing = { group = "me.dm7.barcodescanner", name = "zxing", version.ref = "zxing" }
+okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+
