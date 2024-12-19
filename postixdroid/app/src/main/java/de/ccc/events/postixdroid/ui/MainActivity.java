@@ -426,6 +426,9 @@ public class MainActivity extends AppCompatActivity implements CustomizedScanner
         checkable = menu.findItem(R.id.action_play_sound);
         checkable.setChecked(config.getSoundEnabled());
 
+        checkable = menu.findItem(R.id.action_dhl);
+        checkable.setChecked(config.getDHLEnabled());
+
         return true;
     }
 
