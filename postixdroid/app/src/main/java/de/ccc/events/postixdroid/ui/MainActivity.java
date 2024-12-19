@@ -21,7 +21,6 @@ import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.provider.MediaStore;
 import android.text.Html;
 import android.text.format.Formatter;
 import android.text.method.LinkMovementMethod;
@@ -75,6 +74,7 @@ public class MainActivity extends AppCompatActivity implements CustomizedScanner
     private TicketCheckProvider checkProvider;
     private AppConfig config;
     private DataWedgeHelper dataWedgeHelper;
+    private WiFiHelper wiFiHelper;
     private AlertDialog dialog;
 
     Runnable timerUpdate = new Runnable() {
@@ -138,6 +138,12 @@ public class MainActivity extends AppCompatActivity implements CustomizedScanner
                 }
             }
         }
+
+        wiFiHelper = new WiFiHelper(this);
+        if (wiFiHelper.hasConfig()) {
+            wiFiHelper.connectCashdeskWiFi();
+        }
+
         timerHandler.postDelayed(timerUpdate, 100);
     }
 
@@ -258,7 +264,23 @@ public class MainActivity extends AppCompatActivity implements CustomizedScanner
     private void handleConfigScanned(String s) {
         try {
             JSONObject jsonObject = new JSONObject(s);
-            config.setSessionConfig(jsonObject.getString("url"), jsonObject.getString("key"));
+            if (jsonObject.has("wifi")) {
+                config.setSessionConfig(
+                        jsonObject.getString("url"),
+                        jsonObject.getString("key"),
+                        jsonObject.getJSONObject("wifi")
+                );
+            } else {
+                config.setSessionConfig(
+                        jsonObject.getString("url"),
+                        jsonObject.getString("key")
+                );
+            }
+
+            if (wiFiHelper.hasConfig()) {
+                wiFiHelper.connectCashdeskWiFi();
+            }
+
             checkProvider = new OnlineCheckProvider(this);
             displayScanResult(new TicketCheckProvider.CheckResult(
                     TicketCheckProvider.CheckResult.Type.VALID,
@@ -428,6 +450,8 @@ public class MainActivity extends AppCompatActivity implements CustomizedScanner
 
         checkable = menu.findItem(R.id.action_dhl);
         checkable.setChecked(config.getDHLEnabled());
+
+
 
         return true;
     }

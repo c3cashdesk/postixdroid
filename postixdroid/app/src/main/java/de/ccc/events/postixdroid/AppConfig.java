@@ -3,6 +3,8 @@ package de.ccc.events.postixdroid;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import org.json.JSONObject;
+
 public class AppConfig {
     public static final String PREFS_NAME = "postixdroid";
     public static final String PREFS_KEY_API_URL = "postix_api_url";
@@ -12,6 +14,9 @@ public class AppConfig {
     public static final String PREFS_PLAY_AUDIO = "playaudio";
     public static final String PREFS_DHL = "dhl";
     public static final String PREFS_KEY_CAMERA = "camera";
+    public static final String PREFS_WIFI_SSID = "wifi_ssid";
+    public static final String PREFS_WIFI_USER = "wifi_user";
+    public static final String PREFS_WIFI_PASS = "wifi_pass";
     private SharedPreferences prefs;
 
     public AppConfig(Context ctx) {
@@ -23,10 +28,21 @@ public class AppConfig {
     }
 
     public void setSessionConfig(String url, String key) {
+        setSessionConfig(url, key, new JSONObject());
+    }
+    public void setSessionConfig(String url, String key, JSONObject wifi) {
         prefs.edit()
                 .putString(PREFS_KEY_API_URL, url)
                 .putString(PREFS_KEY_API_KEY, key)
                 .apply();
+
+        if (wifi.has("ssid") && wifi.has("user") && wifi.has("pass")) {
+            prefs.edit()
+                    .putString(PREFS_WIFI_SSID, wifi.optString("ssid"))
+                    .putString(PREFS_WIFI_USER, wifi.optString("user"))
+                    .putString(PREFS_WIFI_PASS, wifi.optString("pass"))
+                    .apply();
+        }
     }
 
     public void resetSessionConfig() {
@@ -42,6 +58,18 @@ public class AppConfig {
 
     public String getApiKey() {
         return prefs.getString(PREFS_KEY_API_KEY, "");
+    }
+
+    public String getWiFiSSID() {
+        return prefs.getString(PREFS_WIFI_SSID, "");
+    }
+
+    public String getWiFiUser() {
+        return prefs.getString(PREFS_WIFI_USER, "");
+    }
+
+    public String getWiFiPass() {
+        return prefs.getString(PREFS_WIFI_PASS, "");
     }
 
     public boolean getFlashlight() {
