@@ -1,10 +1,11 @@
 package de.ccc.events.postixdroid.ui;
 
-import android.Manifest;
+import static androidx.core.content.ContextCompat.getExternalFilesDirs;
+
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.os.Build;
-import android.os.Environment;
+import android.os.Bundle;
 import android.util.Log;
 
 import java.io.File;
@@ -34,6 +35,15 @@ public class DataWedgeHelper {
         }
     }
 
+    private File getStagingDirectory() {
+        File[] externalStorageDirectory = getExternalFilesDirs(ctx, null);
+        File stagingDirectory = new File(externalStorageDirectory[0].getPath(), "/datawedge_import");
+        if (!stagingDirectory.exists()) {
+            stagingDirectory.mkdirs();
+        }
+        return stagingDirectory;
+    }
+
     private void copyAllStagedFiles() throws IOException {
         File stagingDirectory = getStagingDirectory();
         File[] filesToStage = stagingDirectory.listFiles();
@@ -61,7 +71,7 @@ public class DataWedgeHelper {
                 fileToImport.setExecutable(true, false);
                 fileToImport.setReadable(true, false);
                 fileToImport.setWritable(true, false);
-                Log.i("DataWddge", "DataWedge profile written successfully.");
+                Log.i("DataWedge", "DataWedge profile written successfully.");
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             } catch (IOException e) {
@@ -81,19 +91,8 @@ public class DataWedgeHelper {
         out.close();
     }
 
-    private File getStagingDirectory()
-    {
-        File externalStorageDirectory = Environment.getExternalStorageDirectory();
-        File stagingDirectory = new File(externalStorageDirectory.getPath(), "/datawedge_import");
-        if (!stagingDirectory.exists()) {
-            stagingDirectory.mkdirs();
-        }
-        return stagingDirectory;
-    }
-
-
     public void install() throws IOException {
-        File stgfile = new File(getStagingDirectory(), "dwprofile_pretix.db");
+        File stgfile = new File(getStagingDirectory(), "dwprofile_postix.db");
         if (stgfile.exists()) {
             return;
         }
@@ -101,6 +100,16 @@ public class DataWedgeHelper {
 
         InputStream rawin = ctx.getResources().openRawResource(R.raw.dwprofile);
         copyFile(rawin, stgout);
+
+        // Legacy DataWedge Profile import
         copyAllStagedFiles();
+
+        // New DataWedge Profile Import (available since DataWedge 6.7)
+        Intent importIntent = new Intent();
+        Bundle importBundle = new Bundle();
+        importBundle.putString("FOLDER_PATH", getStagingDirectory().toString());
+        importIntent.setAction("com.symbol.datawedge.api.ACTION");
+        importIntent.putExtra("com.symbol.datawedge.api.IMPORT_CONFIG", importBundle);
+        ctx.sendBroadcast(importIntent);
     }
 }
