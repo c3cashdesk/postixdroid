@@ -12,6 +12,7 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import androidx.annotation.RawRes;
@@ -126,15 +127,23 @@ public class MainActivity extends AppCompatActivity implements CustomizedScanner
 
         dataWedgeHelper = new DataWedgeHelper(this);
         if (dataWedgeHelper.isInstalled()) {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                        PERMISSIONS_REQUEST_WRITE_STORAGE);
-            } else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                 try {
                     dataWedgeHelper.install();
                 } catch (IOException e) {
                     e.printStackTrace();
+                }
+            } else {
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(this,
+                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                            PERMISSIONS_REQUEST_WRITE_STORAGE);
+                } else {
+                    try {
+                        dataWedgeHelper.install();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
@@ -192,7 +201,9 @@ public class MainActivity extends AppCompatActivity implements CustomizedScanner
             }
             case PERMISSIONS_REQUEST_WRITE_STORAGE: {
                 try {
-                    dataWedgeHelper.install();
+                    if (dataWedgeHelper != null) {
+                        dataWedgeHelper.install();
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
