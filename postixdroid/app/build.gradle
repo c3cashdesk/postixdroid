@@ -7,8 +7,8 @@ android {
         applicationId "de.events.ccc.postixdroid"
         minSdkVersion 16
         targetSdkVersion 33
-        versionCode 6
-        versionName "camp23.2"
+        versionCode 7
+        versionName "39.0"
         multiDexEnabled true
     }
 
