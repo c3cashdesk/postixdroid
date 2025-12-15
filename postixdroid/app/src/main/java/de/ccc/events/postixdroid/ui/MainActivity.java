@@ -246,10 +246,32 @@ public class MainActivity extends AppCompatActivity implements CustomizedScanner
         handleScan(s);
     }
 
+    public String cleanInput(String s) {
+        var cleaned = s.replaceAll("[\\p{C}]", "�"); // remove unprintable characters
+
+        var ECIIdentifiers = new String[] {
+                "\\000001",  // Latin1
+                "\\000003",  // Latin1
+                "\\000026",  // UTF-8
+                "\\000027",  // ASCII
+        };
+
+        for (String eciIdentifier : ECIIdentifiers) {
+            if (cleaned.startsWith(eciIdentifier)) {
+                cleaned = cleaned.substring(eciIdentifier.length());
+                break;
+            }
+        }
+
+        return cleaned;
+    }
+
     public void handleScan(String s) {
         if (dialog != null && dialog.isShowing()) {
             return;
         }
+
+        s = cleanInput(s);
 
         if (s.equals(lastScanCode) && System.currentTimeMillis() - lastScanTime < 5000) {
             Toast.makeText(this, R.string.doublescan, Toast.LENGTH_SHORT).show();
