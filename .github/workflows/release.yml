@@ -15,6 +15,12 @@ jobs:
         id: var
         run: echo tag=${GITHUB_REF#refs/*/} >> $GITHUB_OUTPUT
 
+      - name: Setup build tool version variable
+        shell: bash
+        run: |
+          BUILD_TOOL_VERSION=$(ls /usr/local/lib/android/sdk/build-tools/ | tail -n 1)
+          echo "BUILD_TOOL_VERSION=$BUILD_TOOL_VERSION" >> $GITHUB_ENV
+
       - name: Build APK
         working-directory: ./postixdroid
         run: bash ./gradlew assembleRelease
@@ -22,6 +28,8 @@ jobs:
       - name: Sign APK
         id: sign_apk
         uses: r0adkll/sign-android-release@v1
+        env:
+          BUILD_TOOLS_VERSION: ${{ env.BUILD_TOOL_VERSION }}
         with:
           releaseDirectory: postixdroid/app/build/outputs/apk/release
           signingKeyBase64: ${{ secrets.SIGNING_KEY_BASE64 }}
