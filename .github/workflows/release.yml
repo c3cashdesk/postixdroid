@@ -16,13 +16,14 @@ jobs:
         run: echo tag=${GITHUB_REF#refs/*/} >> $GITHUB_OUTPUT
 
       - name: Build APK
+        working-directory: ./postixdroid
         run: bash ./gradlew assembleRelease
 
       - name: Sign APK
         id: sign_apk
         uses: r0adkll/sign-android-release@v1
         with:
-          releaseDirectory: app/build/outputs/apk/release
+          releaseDirectory: postixdroid/app/build/outputs/apk/release
           signingKeyBase64: ${{ secrets.SIGNING_KEY_BASE64 }}
           alias: ${{ secrets.ALIAS }}
           keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
