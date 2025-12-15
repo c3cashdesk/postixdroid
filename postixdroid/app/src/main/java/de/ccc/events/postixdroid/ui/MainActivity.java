@@ -1,6 +1,7 @@
 package de.ccc.events.postixdroid.ui;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -53,6 +54,7 @@ import java.util.List;
 import java.util.Map;
 
 import de.ccc.events.postixdroid.AppConfig;
+import de.ccc.events.postixdroid.BuildConfig;
 import de.ccc.events.postixdroid.R;
 import de.ccc.events.postixdroid.check.OnlineCheckProvider;
 import de.ccc.events.postixdroid.check.TicketCheckProvider;
@@ -557,7 +559,13 @@ public class MainActivity extends AppCompatActivity implements CustomizedScanner
 
         TextView textView = (TextView) view.findViewById(R.id.aboutText);
 
-        String text = "";
+        @SuppressLint("DefaultLocale")
+        String text = String.format(
+                "<strong>%s</strong> %s (%d)<br><br>",
+                BuildConfig.APPLICATION_ID,
+                BuildConfig.VERSION_NAME,
+                BuildConfig.VERSION_CODE
+        );
 
         StringBuilder builder = new StringBuilder();
         InputStream fis;
@@ -569,7 +577,7 @@ public class MainActivity extends AppCompatActivity implements CustomizedScanner
                 builder.append(line);
             }
 
-            text = builder.toString();
+            text += builder.toString();
             fis.close();
         } catch (IOException e) {
             e.printStackTrace();
