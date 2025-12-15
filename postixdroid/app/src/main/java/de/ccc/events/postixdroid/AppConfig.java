@@ -77,7 +77,7 @@ public class AppConfig {
     }
 
     public boolean getCamera() {
-        return prefs.getBoolean(PREFS_KEY_CAMERA, true);
+        return prefs.getBoolean(PREFS_KEY_CAMERA, false);
     }
 
     public void setCamera(boolean val) {
