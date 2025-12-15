@@ -54,5 +54,5 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ${{ steps.sign_apk.outputs.signedReleaseFile }}
-          asset_name: notificationlightbridge-${{ steps.var.outputs.tag }}.apk
+          asset_name: postixdroid-${{ steps.var.outputs.tag }}.apk
           asset_content_type: application/zip
