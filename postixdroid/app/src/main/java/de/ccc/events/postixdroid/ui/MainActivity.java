@@ -516,6 +516,12 @@ public class MainActivity extends AppCompatActivity implements CustomizedScanner
                     Toast.makeText(this, R.string.not_configured, Toast.LENGTH_SHORT).show();
                 }
                 return true;*/
+        } else if (itemId == R.id.action_reinstall_datawedge) {
+            try {
+                dataWedgeHelper.install(true);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         } else if (itemId == R.id.action_about) {
             asset_dialog(R.raw.about, R.string.about);
             return true;

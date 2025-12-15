@@ -38,4 +38,5 @@
     <string name="ok">OK</string>
     <string name="networkinfo">Network info</string>
     <string name="action_play_sound">Play Sound</string>
+    <string name="reinstall_datawedge">Reinstall DataWedge</string>
 </resources>

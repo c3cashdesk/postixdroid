@@ -45,6 +45,10 @@
         android:title="@string/networkinfo"
         app:showAsAction="never" />
     <item
+        android:id="@+id/action_reinstall_datawedge"
+        android:title="@string/reinstall_datawedge"
+        app:showAsAction="never" />
+    <item
         android:id="@+id/action_about"
         android:title="@string/about"
         app:showAsAction="never" />

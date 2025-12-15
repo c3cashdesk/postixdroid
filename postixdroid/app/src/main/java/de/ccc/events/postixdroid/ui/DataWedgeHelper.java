@@ -4,8 +4,10 @@ import static androidx.core.content.ContextCompat.getExternalFilesDirs;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import java.io.File;
@@ -20,6 +22,7 @@ import de.ccc.events.postixdroid.R;
 
 public class DataWedgeHelper {
     private Context ctx;
+    private int dwprofileVersion = 1;
 
     public DataWedgeHelper(Context ctx) {
         this.ctx = ctx;
@@ -92,8 +95,13 @@ public class DataWedgeHelper {
     }
 
     public void install() throws IOException {
+        install(false);
+    }
+
+    public void install(boolean force) throws IOException {
         File stgfile = new File(getStagingDirectory(), "dwprofile_postix.db");
-        if (stgfile.exists()) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
+        if (!force && stgfile.exists() && prefs.getInt("__dwprofile_installed_version", 0) >= dwprofileVersion) {
             return;
         }
         FileOutputStream stgout = new FileOutputStream(stgfile);
@@ -111,5 +119,7 @@ public class DataWedgeHelper {
         importIntent.setAction("com.symbol.datawedge.api.ACTION");
         importIntent.putExtra("com.symbol.datawedge.api.IMPORT_CONFIG", importBundle);
         ctx.sendBroadcast(importIntent);
+
+        prefs.edit().putInt("__dwprofile_installed_version", dwprofileVersion).apply();
     }
 }

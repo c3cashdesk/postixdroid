@@ -39,4 +39,5 @@
     <string name="no">Nein</string>
     <string name="ok">Ok</string>
     <string name="networkinfo">Netzwerk-Info</string>
+    <string name="reinstall_datawedge">DataWedge reinstallieren</string>
 </resources>
