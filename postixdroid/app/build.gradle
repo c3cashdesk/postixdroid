@@ -1,19 +1,19 @@
-apply plugin: 'com.android.application'
+plugins {
+    alias(libs.plugins.android.application)
+}
 
 android {
-    compileSdkVersion 33
+    namespace = "de.ccc.events.postixdroid"
+
+    compileSdk 33
 
     defaultConfig {
-        applicationId "de.events.ccc.postixdroid"
+        applicationId "de.ccc.events.postixdroid"
         minSdkVersion 16
         targetSdkVersion 33
         versionCode 7
         versionName "39.0"
         multiDexEnabled true
-    }
-
-    lintOptions {
-        disable 'InvalidPackage' // problem with jetty and bouncycastle
     }
 
     signingConfigs {
@@ -39,16 +39,22 @@ android {
     }
 
     packagingOptions {
-        exclude 'META-INF/LICENSE.txt'
-        exclude 'META-INF/NOTICE.txt'
+        resources {
+            excludes += ['META-INF/LICENSE.txt', 'META-INF/NOTICE.txt']
+        }
+    }
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
     }
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.android.support:multidex:1.0.3'
-    implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.google.android.material:material:1.9.0'
-    implementation 'me.dm7.barcodescanner:zxing:1.9.8'
-    implementation 'com.squareup.okhttp3:okhttp:4.10.0'
+    implementation libs.multidex
+    implementation libs.appcompat
+    implementation libs.material
+    implementation libs.zxing
+    implementation libs.okhttp
 }
